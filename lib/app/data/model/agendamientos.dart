@@ -3,12 +3,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 
 class AgendamientosModel extends ChangeNotifier {
-  List<Agendamiento> _agendamientos = [];
+  static final AgendamientosModel _instance = AgendamientosModel._internal();
   SharedPreferences? _preferences;
+  List<Agendamiento> _agendamientos = [];
 
-  AgendamientosModel() {
-    _loadAgendamientos();
-    _saveAgendamientos();
+  factory AgendamientosModel() {
+    // Llamamos a un método estático para inicializar antes de devolver la instancia
+    AgendamientosModel.initialize();
+    return _instance;
+  }
+
+  AgendamientosModel._internal();
+
+  // Método estático para inicializar
+  static Future<void> initialize() async {
+    await _instance._loadAgendamientos();
   }
 
   List<Agendamiento> get agendamientos => _agendamientos;

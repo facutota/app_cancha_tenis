@@ -1,4 +1,5 @@
 import 'package:app_cancha_tenis/app/data/model/agendamientos.dart';
+import 'package:app_cancha_tenis/app/ui/pages/home_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -8,7 +9,9 @@ import 'package:intl/intl.dart';
 import '../../api/prob_precipitacion/prob_precipitacion.dart';
 
 class AddShiftScreen extends StatefulWidget {
-  const AddShiftScreen({super.key});
+  final AgendamientosModel agendamientosModel;
+
+  const AddShiftScreen(this.agendamientosModel, {Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -19,7 +22,6 @@ class _AddShiftScreenState extends State<AddShiftScreen> {
   DateTime _fechaSeleccionada = DateTime.now();
   String _canchaSeleccionada = 'Cancha A'; // Cancha por defecto
   String _nombreUsuario = '';
-  final AgendamientosModel _agendamientosModel = AgendamientosModel();
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +81,8 @@ class _AddShiftScreenState extends State<AddShiftScreen> {
                   child: Text(
                     cancha,
                     style: TextStyle(
-                      color: _agendamientosModel.canchaTieneTresTurnosAgendados(
+                      color: widget.agendamientosModel
+                              .canchaTieneTresTurnosAgendados(
                         cancha,
                         _fechaSeleccionada,
                       )
@@ -97,7 +100,7 @@ class _AddShiftScreenState extends State<AddShiftScreen> {
                 }
               },
             ),
-            if (_agendamientosModel.canchaTieneTresTurnosAgendados(
+            if (widget.agendamientosModel.canchaTieneTresTurnosAgendados(
                 _canchaSeleccionada, _fechaSeleccionada))
               const Text(
                 'Cancha no disponible',
@@ -151,7 +154,7 @@ class _AddShiftScreenState extends State<AddShiftScreen> {
                   );
                 } else {
                   // Verificar si la cancha está disponible antes de registrar
-                  if (_agendamientosModel.canchaTieneTresTurnosAgendados(
+                  if (widget.agendamientosModel.canchaTieneTresTurnosAgendados(
                       _canchaSeleccionada, _fechaSeleccionada)) {
                     // Cancha no disponible
                     showDialog(
@@ -181,7 +184,8 @@ class _AddShiftScreenState extends State<AddShiftScreen> {
                     );
 
                     // Agregar el nuevo agendamiento al modelo
-                    _agendamientosModel.agregarAgendamiento(nuevoAgendamiento);
+                    widget.agendamientosModel
+                        .agregarAgendamiento(nuevoAgendamiento);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -191,7 +195,13 @@ class _AddShiftScreenState extends State<AddShiftScreen> {
                           actions: [
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pop();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen(
+                                          agendamientosModel:
+                                              widget.agendamientosModel)),
+                                );
                               },
                               child: const Text('OK'),
                             ),

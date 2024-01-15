@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeApp themeApp = ThemeApp();
-
+    AgendamientosModel miAgendamientosModel = AgendamientosModel();
     return ChangeNotifierProvider(
       create: (context) =>
           AgendamientosModel(), // Crear una instancia de AgendamientosModel
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           textTheme: themeApp.textTheme,
         ),
-        home: const HomeScreen(),
+        home: HomeScreen(agendamientosModel: miAgendamientosModel),
       ),
     );
   }
